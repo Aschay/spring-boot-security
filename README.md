@@ -60,5 +60,17 @@ public InMemoryUserDetailsManager userDetailsService() {
 	return new InMemoryUserDetailsManager(user, admin);
 }
 ```
-Full example at branch v1
+
+## 3. JDBC based Authentications
+Spring Security  provides support for username-and-password-based authentication that is retrieved by using JDBC. 
+
+The used example is MySQL as db, we populated users(admin , user) with password respectively admin ,user encrypted by Bcrypt with 10 rounds and given roles admin, user and persisted its in the databse 
+Then to authenticate from the db 
+```
+@Autowired
+public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+	auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
+}
+ ````
 
