@@ -8,7 +8,7 @@ As result it  authenticate any request with it "basic" authentication.
 
 Also by default its creates a "loginform" with those credientials .
 
-## 2.customize some features in spring security
+## 2.Configure filters and in-memory Authentication in spring security
 ### allowing all requests to the url "/"
 
 ```
@@ -17,7 +17,7 @@ WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().requestMatchers("/");
 }
 ```
-###  allowing request to specific url for specifics users
+###  allowing requests to specific urls for specifics users
 
 ```	
 @Bean
@@ -61,7 +61,7 @@ public InMemoryUserDetailsManager userDetailsService() {
 }
 ```
 
-## 3. JDBC based Authentications
+## 3.Configuring JDBC based Authentications
 Spring Security  provides support for username-and-password-based authentication that is retrieved by using JDBC. 
 
 The used example is MySQL as db, we populated users(admin , user) with password respectively admin ,user encrypted by Bcrypt with 10 rounds and given roles admin, user and persisted its in the databse 
@@ -73,4 +73,32 @@ public void configAuthentication(AuthenticationManagerBuilder auth) throws Excep
 	auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
 }
  ````
+## 4. Configuring AuthenticationProvider 
+for further customization we can also  set up an Authentication Provider in Spring Security, allowing for additional flexibility compared to the standard scenario using a simple UserDetailsService and UserDetails ;
+```
+@Bean
+public UserDetailsService userDetailsService() {
+	return new UserDetailsServiceCustom();
+	}
+
+@Bean
+public PasswordEncoder passwordEncoder() {
+	return new BCryptPasswordEncoder(10);
+	}
+
+@Bean
+public AuthenticationProvider authenticationProvider() {
+	DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+	authenticationProvider.setUserDetailsService(userDetailsService());
+	authenticationProvider.setPasswordEncoder(passwordEncoder());
+	return authenticationProvider;
+}
+
+@Bean
+public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+	return config.getAuthenticationManager();
+}
+
+```
+
 

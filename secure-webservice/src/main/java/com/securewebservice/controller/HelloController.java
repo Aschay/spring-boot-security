@@ -1,4 +1,4 @@
-package com.securewebservice;
+package com.securewebservice.controller;
 
 import java.util.HashMap;
 
@@ -18,7 +18,7 @@ public class HelloController {
 	@GetMapping(value = "/auth")
 	HashMap<String, String> welcomeMessageAuth() {
 		HashMap<String, String> map = new HashMap<>();
-		map.put("message", "Hello User");
+		map.put("message", "Hello");
 		map.put("Note", "This page is only for authorized");
 		return map;
 	}
@@ -26,7 +26,7 @@ public class HelloController {
 	HashMap<String, String> welcomeMessageUser() {
 		HashMap<String, String> map = new HashMap<>();
 		map.put("message", "Hello User");
-		map.put("Note", "This page is only for users");
+		map.put("Note", "This page is only authorized  for users");
 		return map;
 	}
 	
@@ -34,9 +34,8 @@ public class HelloController {
 	HashMap<String, String> welcomeMessageAdmin() {
 		HashMap<String, String> map = new HashMap<>();
 		map.put("message", "Hello Admin");
-		map.put("Note", "This page is only accessible to admin");
+		map.put("Note", "This page is only authorized to admin");
 		return map;
 	}
-	
 
 }
