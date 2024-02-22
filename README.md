@@ -11,7 +11,7 @@ Also by default its creates a "loginform" with those credientials .
 ## 2.Configure filters and in-memory Authentication in spring security
 ### allowing all requests to the url "/"
 
-```
+```java
 @Bean
 WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().requestMatchers("/");
@@ -19,7 +19,7 @@ WebSecurityCustomizer webSecurityCustomizer() {
 ```
 ###  allowing requests to specific urls for specifics users
 
-```	
+```java
 @Bean
 SecurityFilterChain web(HttpSecurity http) throws Exception {
 	http
@@ -35,7 +35,7 @@ SecurityFilterChain web(HttpSecurity http) throws Exception {
 
 ```
 ### create in-memory users and authenticate them
- ```
+```java
 @Bean
 public static PasswordEncoder encoder() {
 	return new BCryptPasswordEncoder(10);
@@ -66,16 +66,19 @@ Spring Security  provides support for username-and-password-based authentication
 
 The used example is MySQL as db, we populated users(admin , user) with password respectively admin ,user encrypted by Bcrypt with 10 rounds and given roles admin, user and persisted its in the databse 
 Then to authenticate from the db 
-```
+```java
 @Autowired
 public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 	auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
 }
- ````
+````
+
 ## 4. Configuring AuthenticationProvider 
+
 for further customization we can also  set up an Authentication Provider in Spring Security, allowing for additional flexibility compared to the standard scenario using a simple UserDetailsService and UserDetails ;
-```
+
+```java
 @Bean
 public UserDetailsService userDetailsService() {
 	return new UserDetailsServiceCustom();
@@ -98,7 +101,17 @@ public AuthenticationProvider authenticationProvider() {
 public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 	return config.getAuthenticationManager();
 }
-
 ```
-
-
+## 5. Configuring jwt for authentication 
+We can further use jwt for authentication  with first implementing jwtprovider to validate/generate tokens and  it respective filter 
+At controller level we can just use  for example
+```java
+@GetMapping(value = "/admin")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	HashMap<String, String> welcomeMessageAdmin() {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("message", "Hello Admin");
+		map.put("Note", "This page is only authorized to admin");
+		return map;
+	}
+```

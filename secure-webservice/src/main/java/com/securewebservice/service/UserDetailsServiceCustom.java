@@ -6,16 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.securewebservice.model.UserApp;
 import com.securewebservice.model.UserDetailsCustom;
 import com.securewebservice.repo.UserRepository;
 
+@Service
 public class UserDetailsServiceCustom implements UserDetailsService {
 
 	@Autowired
-	private UserRepository repository;
-
+	public UserRepository repository;
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -24,4 +25,6 @@ public class UserDetailsServiceCustom implements UserDetailsService {
 				.orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
 	}
 
+
+	
 }
