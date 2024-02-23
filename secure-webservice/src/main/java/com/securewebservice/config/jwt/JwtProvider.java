@@ -1,10 +1,12 @@
 package com.securewebservice.config.jwt;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 

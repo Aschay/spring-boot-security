@@ -2,32 +2,18 @@ package com.securewebservice.controller;
 
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.securewebservice.DTO.AuthorizationRequest;
-import com.securewebservice.config.jwt.JwtProvider;
 
-import jakarta.validation.Valid;
 
 @RestController
 public class HelloController {
 
-	@Autowired
-	private JwtProvider jwtProvider;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
 
-	@GetMapping(value = "/")
+	@GetMapping(value = "/home")
 	HashMap<String, String> welcomeMessage() {
 		HashMap<String, String> map = new HashMap<>();
 		map.put("message", "Hello EveryOne");
@@ -60,17 +46,6 @@ public class HelloController {
 		map.put("message", "Hello Admin");
 		map.put("Note", "This page is only authorized to admin");
 		return map;
-	}
-
-	@PostMapping("/gen")
-	public String authenticateAndGetToken(@Valid @RequestBody AuthorizationRequest authRequest) {
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-		if (authentication.isAuthenticated()) {
-			return jwtProvider.generateToken(authRequest.getUsername());
-		} else {
-			throw new UsernameNotFoundException("invalid user request !");
-		}
 	}
 
 }

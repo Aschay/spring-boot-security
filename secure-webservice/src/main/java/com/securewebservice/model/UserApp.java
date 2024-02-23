@@ -35,6 +35,7 @@ public class UserApp {
 	
 	@NotBlank
 	@Size(min =5)
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$")
 	private String username;
 	
 	
@@ -48,5 +49,6 @@ public class UserApp {
 	@NotBlank
     private String password;
 	@NotBlank
+	@Pattern(regexp = "^[A-Z_,]+$")
 	private String roles ;
 }

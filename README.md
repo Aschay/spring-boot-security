@@ -113,5 +113,5 @@ At controller level we can just use  for example
 		map.put("message", "Hello Admin");
 		map.put("Note", "This page is only authorized to admin");
 		return map;
-	}
+}
 ```
