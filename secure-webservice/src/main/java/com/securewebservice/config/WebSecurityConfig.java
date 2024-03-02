@@ -2,6 +2,7 @@ package com.securewebservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -28,6 +29,7 @@ import com.securewebservice.service.UserDetailsServiceCustom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -46,19 +48,27 @@ public class WebSecurityConfig {
 	@Autowired
 	UserDetailsServiceCustom userDetailsService;
 
-	@Bean
-	WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers("auth/signin", "auth/register","/auth/logout", "/home");
-	}
+//	@Bean
+//	WebSecurityCustomizer webSecurityCustomizer() {
+//		return (web) -> web.ignoring().requestMatchers("auth/signin", "auth/register", "/home");
+//	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		//jwt stateless 
 		http.csrf(AbstractHttpConfigurer::disable);
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		//custom authorization and authentication
+		http.cors(Customizer.withDefaults());
 		http.exceptionHandling(exception -> exception .accessDeniedHandler(jwtAutho)
-				                                      .authenticationEntryPoint(jwtAuthen));
-		http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+				                                       .authenticationEntryPoint(jwtAuthen)
+				              );
+		
+		http.authorizeHttpRequests(auth ->  auth.requestMatchers(HttpMethod.POST,"auth/signin").permitAll()
+				                                .requestMatchers(HttpMethod.POST,"auth/register").permitAll()
+				                                .requestMatchers(HttpMethod.GET,"home").permitAll()
+				                                .requestMatchers("auth/me").hasAnyAuthority("ROLE_ADMIN")
+				                                .anyRequest().authenticated());
+		
 		HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES));
 		http.logout(logout -> logout 
 				                 .logoutUrl("/auth/logout")
@@ -68,7 +78,6 @@ public class WebSecurityConfig {
 				     );
 		http.authenticationProvider(authenticationProvider());
 		http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
-	
 		return http.build();
 
 	}

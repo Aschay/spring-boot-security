@@ -46,7 +46,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 			}
-			else throw new BadCredentialsException("password or username invalid");
 		}
 		filterChain.doFilter(request, response);
 	}

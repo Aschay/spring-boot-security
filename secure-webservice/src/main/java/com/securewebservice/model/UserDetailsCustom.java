@@ -9,11 +9,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserDetailsCustom implements UserDetails {
 	private static final long serialVersionUID = -3092753139449108760L;
 	
 	private String name;
+	
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
+	
 	private List<GrantedAuthority> authorities;
 
 	public UserDetailsCustom (UserApp userApp) {
